@@ -40,10 +40,6 @@
 			}
 			function update()
 			{
-				var infoString = "Health: " + health + "<br/>Level: " + level + "<br/>Experience: " + experience;
-				
-				$('#info').html(infoString);
-				
 				var actionString = "";
 				if (health > target.damage)
 				{
@@ -69,6 +65,10 @@
 				}
 				
 				$('#action').html(actionString + "<br/> " + $('#action').html());
+				
+				var infoString = "Health: " + health + "<br/>Level: " + level + "<br/>Experience: " + experience;
+				
+				$('#info').html(infoString);
 			}
 		</script>
 	</body>
