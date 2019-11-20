@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, user-scalable=no" />
+		<title>Idle Goblin War</title>
+		<style type="text/css">
+			* {
+				font-size: 16px;
+			}
+		</style>
+	</head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<body onload="setup()">
+		<p id="info"></p>
+		<script>
+			var health = 10;
+			var maxHealth = 10;
+			var damage = 1;
+			var experience = 0;
+			var level = 1;
+			
+			function creature(name)
+			{
+				if (name == "Goblin")
+				{
+					this.name = "Goblin";
+					this.health = 5;
+					this.damage = 1;
+					this.experience = 1;
+				}
+			}
+			
+			var target = new creature("Goblin");
+			
+			function setup()
+			{
+				setInterval(update, 1000)
+			}
+			function update()
+			{
+				var updateString = "You are level " + level + ". You have " + experience + " experience. You have " + health + " health.";
+				if (health > target.damage)
+				{
+					updateString += " You attack " + target.name + " for " + damage + " damage.";
+					target.health -= damage;
+					if (target.health <= 0)
+					{
+						updateString += " " + target.name + " is dead. You gain " + target.experience + " experience."
+						experience += target.experience;
+						target = new creature("Goblin");
+						updateString += " " + target.name + " wants to fight."
+					}
+					else
+					{
+						updateString += " " + target.name + " has " + target.health + " health remaining. " + target.name + " attacks you for " + target.damage + " damage."
+						health -= target.damage;
+					}
+				}
+				else
+				{
+					updateString += " You rest to restore your health.";
+					health = maxHealth;
+				}
+				
+				$('#info').html(updateString + "<br/> " + $('#info').html());
+			}
+		</script>
+	</body>
+</html>
