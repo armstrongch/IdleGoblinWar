@@ -13,6 +13,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<body onload="setup()">
 		<p id="info"></p>
+		<p id="action"></p>
 		<script>
 			var health = 10;
 			var maxHealth = 10;
@@ -39,31 +40,35 @@
 			}
 			function update()
 			{
-				var updateString = "You are level " + level + ". You have " + experience + " experience. You have " + health + " health.";
+				var infoString = "Health: " + health + "<br/>Level: " + level + "<br/>Experience: " + experience;
+				
+				$('#info').html(infoString);
+				
+				var actionString = "";
 				if (health > target.damage)
 				{
-					updateString += " You attack " + target.name + " for " + damage + " damage.";
+					actionString += "You attack " + target.name + " for " + damage + " damage.";
 					target.health -= damage;
 					if (target.health <= 0)
 					{
-						updateString += " " + target.name + " is dead. You gain " + target.experience + " experience."
+						actionString += " " + target.name + " is dead. You gain " + target.experience + " experience."
 						experience += target.experience;
 						target = new creature("Goblin");
-						updateString += " " + target.name + " wants to fight."
+						actionString += " " + target.name + " wants to fight."
 					}
 					else
 					{
-						updateString += " " + target.name + " has " + target.health + " health remaining. " + target.name + " attacks you for " + target.damage + " damage."
+						actionString += " " + target.name + " has " + target.health + " health remaining. " + target.name + " attacks you for " + target.damage + " damage."
 						health -= target.damage;
 					}
 				}
 				else
 				{
-					updateString += " You rest to restore your health.";
+					actionString += "You rest to restore your health.";
 					health = maxHealth;
 				}
 				
-				$('#info').html(updateString + "<br/> " + $('#info').html());
+				$('#action').html(actionString + "<br/> " + $('#action').html());
 			}
 		</script>
 	</body>
