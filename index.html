@@ -18,6 +18,7 @@
 			var health = 1;
 			var maxHealth = 1;
 			var damage = 1;
+			var critical = 0;
 			var experience = 0;
 			var level = 1;
 			
@@ -27,72 +28,42 @@
 			
 			var creatureNames = [
 				"Goblin Egg", 
-				"Goblin Larva", 
+				"Hungry Goblin Larva", 
 				"Feral Goblin Toddler", 
 				"Vicious Goblin Child", 
 				"Cruel Adolescent Goblin",
 				"Young Goblin Soldier",
-				"Goblin Warrior"];
+				"Angry Goblin Warrior",
+				"Seasoned Goblin Veteran",
+				"Fierce Goblin Warchief",
+				"Towering Goblin Brute",
+				"Menacing Goblin Assassin",
+				"Vengeful Goblin Admiral"];
 			
-			function creature(name)
+			function creature(creatureLevel)
 			{
-				this.name = name;
-				if (name == creatureNames[0])
-				{
-					this.health = 5;
-					this.damage = 0;
-					this.experience = 1;
-				}
-				else if (name == creatureNames[1])
-				{
-					this.health = 5;
-					this.damage = 1;
-					this.experience = 2;
-				}
-				else if (name == creatureNames[2])
-				{
-					this.health = 15;
-					this.damage = 3;
-					this.experience = 3;
-				}
-				else if (name == creatureNames[3])
-				{
-					this.health = 20;
-					this.damage = 5;
-					this.experience = 4;
-				}
-				else if (name == creatureNames[4])
-				{
-					this.health = 20;
-					this.damage = 10;
-					this.experience = 5;
-				}
-				else if (name == creatureNames[5])
-				{
-					this.health = 45;
-					this.damage = 15;
-					this.experience = 5;
-				}
-				else if (name == creatureNames[6])
-				{
-					this.health = 50;
-					this.damage = 25;
-					this.experience = 6;
-				}
+				this.name = creatureNames[creatureLevel];
+				this.health = (creatureLevel + 1) * 5;
+				this.damage = Math.pow(1.5, creatureLevel) - 1;
+				this.experience = Math.pow(2, creatureLevel);
 			}
 			
-			var target = new creature(creatureNames[0]);
+			var target = new creature(0);
 			
 			function levelUp()
 			{
-				var rand = Math.random();
-				if (rand < 0.5)
+				var rand = Math.random() * 3;
+				if (rand <= 1)
 				{
 					damage++;
-				}
-				else
+				} 
+				else if (rand <= 2)
 				{
 					maxHealth++;
+				} 
+				else
+				{
+					critical++;
 				}
 			}
 			
@@ -101,7 +72,7 @@
 				var selectedTarget = new creature(creatureNames[0]);
 				for (let i = 0; i < creatureNames.length; i++)
 				{
-					var potentialTarget = new creature(creatureNames[i]);
+					var potentialTarget = new creature(i);
 					if (potentialTarget.damage < maxHealth / 2)
 					{
 						selectedTarget = potentialTarget;
@@ -130,7 +101,13 @@
 				var actionString = "";
 				if (health > target.damage)
 				{
-					actionString += "You attack " + target.name + " for " + damage + " damage.";
+					actionString += "You attack " + target.name + " for " + Math.round(damage) + " damage.";
+					var rand = Math.random();
+					if (rand >= 0.95)
+					{
+						actionString += " It's a critical hit. You deal an extra " + critical + " damage."
+						target.health -= critical;
+					}
 					target.health -= damage;
 					if (target.health <= 0)
 					{
@@ -143,9 +120,17 @@
 							actionString+= " Your level increases!";
 							levelUp();
 						}
-						
+						var oldTargetName = target.name;
 						target = selectTarget();
-						actionString += " " + target.name + " wants to fight."
+						if (oldTargetName == target.name)
+						{
+							actionString += " Another " + target.name + " wants to fight."
+						}
+						else
+						{
+							actionString += " " + target.name + " wants to fight."
+						}
+						
 					}
 					else
 					{
@@ -161,7 +146,11 @@
 				
 				$('#action').html(actionString);
 				
-				var infoString = "Health: " + health + "<br/>Damage: " + damage + "<br/>Level: " + level + "<br/>Experience: " + experience;
+				var infoString = "Health: " + Math.round(health)
+				+ "<br/>Damage: " + damage 
+				+ "<br/>Critical: " + critical 
+				+ "<br/>Level: " + level 
+				+ "<br/>Experience: " + experience;
 				
 				$('#info').html(infoString);
 			}
